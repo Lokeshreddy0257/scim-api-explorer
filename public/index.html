@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SCIM API Explorer — Enterprise Identity Lifecycle Simulator</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+<!-- ── Nav ──────────────────────────────────────────────────────────────── -->
+<nav>
+  <div class="nav-inner">
+    <div class="nav-brand">
+      <span class="brand-icon">⚡</span>
+      <span class="brand-text">SCIM API Explorer</span>
+    </div>
+    <div class="nav-links">
+      <a href="#lifecycle">Lifecycle</a>
+      <a href="#endpoints">Endpoints</a>
+      <a href="#playground">Playground</a>
+      <a href="https://github.com/Lokeshreddy0257/scim-api-explorer" target="_blank" class="nav-github">
+        GitHub ↗
+      </a>
+    </div>
+  </div>
+</nav>
+
+<!-- ── Hero ─────────────────────────────────────────────────────────────── -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="container">
+    <div class="hero-badge">SCIM 2.0 · RFC 7643 · RFC 7644</div>
+    <h1>Enterprise Identity<br/><span class="gradient-text">Lifecycle Simulator</span></h1>
+    <p class="hero-sub">
+      A live SCIM 2.0 API that demonstrates how companies like Databricks automate
+      user provisioning, access reviews, and nightly drift detection —
+      the way it actually works in production.
+    </p>
+    <div class="hero-actions">
+      <a href="#playground" class="btn-primary">Try the API →</a>
+      <a href="#lifecycle" class="btn-ghost">See the Scenarios</a>
+    </div>
+    <div class="hero-url">
+      <span class="url-label">Base URL</span>
+      <code class="url-code">https://scim-api-explorer.vercel.app/scim/v2</code>
+    </div>
+  </div>
+</section>
+
+<!-- ── Stats bar ─────────────────────────────────────────────────────────── -->
+<div class="stats-bar">
+  <div class="container stats-inner">
+    <div class="stat"><span class="stat-num">12</span><span class="stat-label">Endpoints</span></div>
+    <div class="stat-divider"></div>
+    <div class="stat"><span class="stat-num">5</span><span class="stat-label">Lifecycle Scenarios</span></div>
+    <div class="stat-divider"></div>
+    <div class="stat"><span class="stat-num">7</span><span class="stat-label">Lessons</span></div>
+    <div class="stat-divider"></div>
+    <div class="stat"><span class="stat-num">SCIM 2.0</span><span class="stat-label">Compliant</span></div>
+  </div>
+</div>
+
+<!-- ── Lifecycle Scenarios ───────────────────────────────────────────────── -->
+<section id="lifecycle" class="section">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-tag">Enterprise Workflows</div>
+      <h2>Identity Lifecycle Scenarios</h2>
+      <p>Every scenario makes real SCIM API calls. Watch the HTTP traffic in the playground below.</p>
+    </div>
+
+    <div class="scenarios-grid">
+
+      <div class="scenario-card" data-scenario="onboarding">
+        <div class="scenario-icon" style="background: rgba(34,197,94,0.12); color: #22c55e;">🚀</div>
+        <div class="scenario-num">01</div>
+        <h3>Onboarding</h3>
+        <p>New hire joins → AD group registered → user provisioned → Databricks workspace access granted automatically via SCIM.</p>
+        <div class="scenario-steps">
+          <div class="step"><span class="method post">POST</span><code>/Groups</code></div>
+          <div class="step"><span class="method post">POST</span><code>/Users</code></div>
+          <div class="step"><span class="method patch">PATCH</span><code>/Groups/&lt;id&gt;</code> add member</div>
+        </div>
+        <button class="run-btn" onclick="runScenario('onboarding')">Run Demo →</button>
+      </div>
+
+      <div class="scenario-card" data-scenario="offboarding">
+        <div class="scenario-icon" style="background: rgba(234,179,8,0.12); color: #eab308;">🔄</div>
+        <div class="scenario-num">02</div>
+        <h3>Offboarding</h3>
+        <p>Employee transfers teams → removed from old AD group → added to new group → access swapped in Databricks instantly.</p>
+        <div class="scenario-steps">
+          <div class="step"><span class="method patch">PATCH</span><code>/Groups/&lt;id&gt;</code> remove</div>
+          <div class="step"><span class="method patch">PATCH</span><code>/Groups/&lt;id&gt;</code> add</div>
+          <div class="step"><span class="method patch">PATCH</span><code>/Users/&lt;id&gt;</code> dept</div>
+        </div>
+        <button class="run-btn" onclick="runScenario('offboarding')">Run Demo →</button>
+      </div>
+
+      <div class="scenario-card" data-scenario="termination">
+        <div class="scenario-icon" style="background: rgba(239,68,68,0.12); color: #ef4444;">🚪</div>
+        <div class="scenario-num">03</div>
+        <h3>Termination</h3>
+        <p>Employee exits → immediate lockout (active=false) → removed from all groups → account permanently deleted.</p>
+        <div class="scenario-steps">
+          <div class="step"><span class="method patch">PATCH</span><code>/Users/&lt;id&gt;</code> deactivate</div>
+          <div class="step"><span class="method patch">PATCH</span><code>/Groups/&lt;id&gt;</code> remove</div>
+          <div class="step"><span class="method delete">DELETE</span><code>/Users/&lt;id&gt;</code></div>
+        </div>
+        <button class="run-btn" onclick="runScenario('termination')">Run Demo →</button>
+      </div>
+
+      <div class="scenario-card" data-scenario="recertification">
+        <div class="scenario-icon" style="background: rgba(139,92,246,0.12); color: #8b5cf6;">📋</div>
+        <div class="scenario-num">04</div>
+        <h3>Recertification</h3>
+        <p>90-day access review (SOC 2 / ISO 27001). Manager approves 3 accounts, revokes 1 stale account that hasn't been used in 95 days.</p>
+        <div class="scenario-steps">
+          <div class="step"><span class="method get">GET</span><code>/Users</code> review list</div>
+          <div class="step"><span class="method patch">PATCH</span><code>/Users/&lt;id&gt;</code> revoke</div>
+          <div class="step"><span class="method patch">PATCH</span><code>/Groups/&lt;id&gt;</code> remove</div>
+        </div>
+        <button class="run-btn" onclick="runScenario('recertification')">Run Demo →</button>
+      </div>
+
+      <div class="scenario-card scenario-card-wide" data-scenario="verification">
+        <div class="scenario-icon" style="background: rgba(59,130,246,0.12); color: #3b82f6;">🌙</div>
+        <div class="scenario-num">05</div>
+        <h3>Nightly Verification</h3>
+        <p>Automated job runs at 2 AM. Compares AD source of truth (expected) vs live Databricks state (actual). Detects drift — missing users, unauthorized group members — and auto-remediates via SCIM.</p>
+        <div class="scenario-steps">
+          <div class="step"><span class="method get">GET</span><code>/Users + /Groups</code> snapshot</div>
+          <div class="step"><span class="badge-drift">DRIFT DETECTED</span></div>
+          <div class="step"><span class="method post">POST</span><code>/Users</code> re-provision</div>
+          <div class="step"><span class="method patch">PATCH</span><code>/Groups</code> remove rogue</div>
+        </div>
+        <button class="run-btn" onclick="runScenario('verification')">Run Demo →</button>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── Endpoints Reference ───────────────────────────────────────────────── -->
+<section id="endpoints" class="section section-dark">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-tag">API Reference</div>
+      <h2>SCIM 2.0 Endpoints</h2>
+      <p>All endpoints are live. Use the playground below to try them.</p>
+    </div>
+
+    <div class="endpoints-grid">
+      <div class="endpoint-group">
+        <div class="endpoint-group-title">Users</div>
+        <div class="endpoint-row"><span class="method get">GET</span><code>/scim/v2/Users</code><span class="ep-desc">List all users</span></div>
+        <div class="endpoint-row"><span class="method post">POST</span><code>/scim/v2/Users</code><span class="ep-desc">Create a user</span></div>
+        <div class="endpoint-row"><span class="method get">GET</span><code>/scim/v2/Users/&lt;id&gt;</code><span class="ep-desc">Get one user</span></div>
+        <div class="endpoint-row"><span class="method patch">PATCH</span><code>/scim/v2/Users/&lt;id&gt;</code><span class="ep-desc">Partial update</span></div>
+        <div class="endpoint-row"><span class="method put">PUT</span><code>/scim/v2/Users/&lt;id&gt;</code><span class="ep-desc">Full replace</span></div>
+        <div class="endpoint-row"><span class="method delete">DELETE</span><code>/scim/v2/Users/&lt;id&gt;</code><span class="ep-desc">Delete user</span></div>
+      </div>
+      <div class="endpoint-group">
+        <div class="endpoint-group-title">Groups</div>
+        <div class="endpoint-row"><span class="method get">GET</span><code>/scim/v2/Groups</code><span class="ep-desc">List all groups</span></div>
+        <div class="endpoint-row"><span class="method post">POST</span><code>/scim/v2/Groups</code><span class="ep-desc">Create a group</span></div>
+        <div class="endpoint-row"><span class="method get">GET</span><code>/scim/v2/Groups/&lt;id&gt;</code><span class="ep-desc">Get one group</span></div>
+        <div class="endpoint-row"><span class="method patch">PATCH</span><code>/scim/v2/Groups/&lt;id&gt;</code><span class="ep-desc">Add / remove members</span></div>
+        <div class="endpoint-row"><span class="method delete">DELETE</span><code>/scim/v2/Groups/&lt;id&gt;</code><span class="ep-desc">Delete group</span></div>
+      </div>
+      <div class="endpoint-group">
+        <div class="endpoint-group-title">Discovery</div>
+        <div class="endpoint-row"><span class="method get">GET</span><code>/scim/v2/ServiceProviderConfig</code><span class="ep-desc">Server capabilities</span></div>
+      </div>
+    </div>
+
+    <div class="auth-note">
+      <span class="auth-icon">🔑</span>
+      All requests need: <code>Authorization: Bearer demo-token-abc123</code>
+    </div>
+  </div>
+</section>
+
+<!-- ── Playground ────────────────────────────────────────────────────────── -->
+<section id="playground" class="section">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-tag">Live API Playground</div>
+      <h2>Try it Now</h2>
+      <p>Make real HTTP requests to the deployed SCIM API. See the exact response.</p>
+    </div>
+
+    <div class="playground-layout">
+      <!-- Left: request builder -->
+      <div class="pg-panel">
+        <div class="pg-panel-title">Request</div>
+
+        <div class="pg-field">
+          <label>Quick Select</label>
+          <div class="quick-btns">
+            <button class="qbtn" onclick="loadPreset('listUsers')">List Users</button>
+            <button class="qbtn" onclick="loadPreset('createUser')">Create User</button>
+            <button class="qbtn" onclick="loadPreset('listGroups')">List Groups</button>
+            <button class="qbtn" onclick="loadPreset('createGroup')">Create Group</button>
+            <button class="qbtn" onclick="loadPreset('spc')">ServiceProviderConfig</button>
+          </div>
+        </div>
+
+        <div class="pg-field">
+          <label>Method</label>
+          <div class="method-select-row">
+            <select id="pg-method">
+              <option value="GET">GET</option>
+              <option value="POST">POST</option>
+              <option value="PUT">PUT</option>
+              <option value="PATCH">PATCH</option>
+              <option value="DELETE">DELETE</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="pg-field">
+          <label>URL</label>
+          <input type="text" id="pg-url" value="/scim/v2/Users" class="pg-input" />
+        </div>
+
+        <div class="pg-field" id="body-field">
+          <label>Request Body <span class="optional">(JSON)</span></label>
+          <textarea id="pg-body" class="pg-textarea" placeholder='{"schemas": ["urn:ietf:params:scim:schemas:core:2.0:User"], "userName": "..."}'></textarea>
+        </div>
+
+        <button class="send-btn" id="send-btn" onclick="sendRequest()">
+          <span id="send-label">Send Request</span>
+          <span id="send-spinner" class="spinner hidden"></span>
+        </button>
+      </div>
+
+      <!-- Right: response -->
+      <div class="pg-panel">
+        <div class="pg-panel-title">
+          Response
+          <span id="status-badge" class="status-badge hidden"></span>
+          <span id="timing-badge" class="timing-badge hidden"></span>
+        </div>
+        <div id="pg-response" class="pg-response">
+          <div class="pg-placeholder">
+            <div class="placeholder-icon">⚡</div>
+            <div>Hit "Send Request" to see the live response here.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scenario output area -->
+    <div id="scenario-output" class="scenario-output hidden">
+      <div class="scenario-output-title">
+        <span id="scenario-output-label">Scenario Output</span>
+        <button class="close-btn" onclick="closeScenarioOutput()">✕</button>
+      </div>
+      <div id="scenario-log" class="scenario-log"></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── How it works ──────────────────────────────────────────────────────── -->
+<section class="section section-dark">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-tag">Under the Hood</div>
+      <h2>How SCIM Integrates with Databricks</h2>
+    </div>
+    <div class="diagram-box">
+      <pre class="diagram">
+  HR System ──► Identity Provider (Okta / Azure AD)
+                          │
+                          │  SCIM 2.0 (this API)
+                          ▼
+  ┌─────────────────────────────────────────────────────────┐
+  │                  SCIM Server                            │
+  │   POST /Users    →  Create account                      │
+  │   PATCH /Groups  →  Grant / revoke workspace access     │
+  │   DELETE /Users  →  Remove all access permanently       │
+  └─────────────────────────────────────────────────────────┘
+                          │
+                          ▼
+             Databricks Workspace
+             (access granted/revoked automatically)
+
+
+  Every night at 2 AM — Nightly Verification:
+  ┌──────────────────┐      ┌──────────────────┐
+  │  AD (Expected)   │  ◄── │  Databricks (Actual) │
+  │  source of truth │  compare  │  live state       │
+  └──────────────────┘      └──────────────────┘
+            │
+            │  drift found → SCIM calls to fix
+            ▼
+        Clean state ✓
+      </pre>
+    </div>
+  </div>
+</section>
+
+<!-- ── Footer ────────────────────────────────────────────────────────────── -->
+<footer>
+  <div class="container footer-inner">
+    <div class="footer-brand">⚡ SCIM API Explorer</div>
+    <div class="footer-links">
+      <a href="https://github.com/Lokeshreddy0257/scim-api-explorer" target="_blank">GitHub</a>
+      <a href="/scim/v2/ServiceProviderConfig" target="_blank">ServiceProviderConfig</a>
+    </div>
+    <div class="footer-note">Built with Flask · Deployed on Vercel</div>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
