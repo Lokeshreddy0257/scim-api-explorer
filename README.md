@@ -1,63 +1,54 @@
 # SCIM API Explorer
 
-An interactive, beginner-friendly CLI tool for learning **REST APIs** and **SCIM 2.0** — visually, in your terminal.
+An interactive CLI simulator for learning **REST APIs**, **SCIM 2.0**, and **enterprise identity lifecycle management** — the way it actually works at companies like Databricks.
 
-Run it and watch real HTTP requests fly between a local SCIM client and a live Flask server, with every request/response displayed in color-coded panels.
+Watch real HTTP requests fly between a local SCIM client and a live Flask server. Every request and response is displayed in color-coded panels so the invisible becomes visible.
 
 ---
 
-## What is SCIM?
+## What You'll Learn
 
-SCIM (System for Cross-domain Identity Management) is a standard REST API used by enterprise Identity Providers (Okta, Azure AD, Google Workspace) to automatically provision and deprovision user accounts across SaaS apps like Slack, GitHub, Salesforce, and more.
+| Scenario | What it simulates |
+|----------|-------------------|
+| **Onboarding** | New hire → AD group created → SCIM provisions user → Databricks access granted |
+| **Offboarding** | Team transfer → old group removed → new group added → access swapped |
+| **Termination** | Employee exits → immediate deactivation → group cleanup → permanent deletion |
+| **Recertification** | 90-day access review → manager approves 3, revokes 1 stale account |
+| **Verification** | Nightly job detects drift vs AD source of truth → auto-remediates |
 
 ---
 
 ## Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                        main.py (CLI)                        │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────────┐  │
-│  │  [L] Lessons  │  │  [D] Demo    │  │  [I] Interactive │  │
-│  │ rest_explainer│  │ scim_client  │  │  scim_client     │  │
-│  └──────────────┘  └──────┬───────┘  └────────┬─────────┘  │
-│                            │  HTTP              │            │
-│              ┌─────────────▼──────────────────▼──────────┐  │
-│              │         scim_server (Flask, port 5000)     │  │
-│              │   GET/POST/PUT/PATCH/DELETE /scim/v2/Users │  │
-│              │         In-memory user store (dict)        │  │
-│              └───────────────────────────────────────────┘  │
-│                                                              │
-│              visualizer.py — all Rich terminal output        │
-└─────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────┐
+│                          main.py  (CLI)                             │
+│                                                                     │
+│  [L] Lessons   [1] Onboard  [2] Offboard  [3] Terminate            │
+│  [4] Recert    [5] Verify   [I] Interactive                        │
+│       │              │            │                                 │
+│       ▼              ▼            ▼                                 │
+│  rest_explainer   lifecycle.py  (5 enterprise scenarios)           │
+│  (7 lessons)       │                                                │
+│                    │── scim_client.py  (HTTP client + visualizer)   │
+│                    │                          │                     │
+│                    │                          ▼  real HTTP calls    │
+│                    └──────────── scim_server.py (Flask SCIM 2.0)   │
+│                                    Users + Groups + Audit Log       │
+│                                                                     │
+│  visualizer.py — all Rich terminal output (panels, tables, etc.)   │
+└─────────────────────────────────────────────────────────────────────┘
 ```
-
----
-
-## Features
-
-| Mode | What it does |
-|------|-------------|
-| **Lessons** | 5 guided lessons on REST concepts, HTTP methods, status codes, and SCIM |
-| **Demo** | Fully automated walkthrough: create 3 users → list → patch → deactivate → delete |
-| **Interactive** | Pick any SCIM operation and run it live against the server |
 
 ---
 
 ## Quickstart
 
 ```bash
-# 1. Clone
 git clone https://github.com/Lokeshreddy0257/scim-api-explorer.git
 cd scim-api-explorer
-
-# 2. Install dependencies
 pip install -r requirements.txt
-
-# 3. Copy env file
 cp .env.example .env
-
-# 4. Run
 python main.py
 ```
 
@@ -67,18 +58,18 @@ python main.py
 
 ```
 scim-api-explorer/
-├── main.py                    # CLI entry point + interactive menu
+├── main.py                     # CLI entry point — 8-option menu
 ├── requirements.txt
 ├── .env.example
 ├── src/
 │   ├── __init__.py
-│   ├── scim_server.py         # Flask SCIM 2.0 server (in-memory)
-│   ├── scim_client.py         # HTTP client with request/response visualizer
-│   ├── rest_explainer.py      # 5 beginner lessons on REST + SCIM
-│   └── visualizer.py          # Rich terminal UI helpers
+│   ├── scim_server.py          # Flask SCIM 2.0 server (Users + Groups + Audit Log)
+│   ├── scim_client.py          # HTTP client — shows every request + response
+│   ├── lifecycle.py            # 5 enterprise lifecycle scenarios
+│   ├── rest_explainer.py       # 7 beginner lessons (REST → SCIM → RBAC)
+│   └── visualizer.py           # All Rich terminal UI (panels, tables, diagrams)
 └── examples/
-    ├── demo_crud.py           # Standalone CRUD demo script
-    └── demo_service_provider.py  # ServiceProviderConfig demo
+    └── demo_lifecycle.py       # Standalone: all 5 scenarios end-to-end
 ```
 
 ---
@@ -92,8 +83,43 @@ scim-api-explorer/
 | `POST` | `/scim/v2/Users` | Create a user |
 | `GET` | `/scim/v2/Users/<id>` | Get one user |
 | `PUT` | `/scim/v2/Users/<id>` | Replace a user (full update) |
-| `PATCH` | `/scim/v2/Users/<id>` | Partial update (deactivate, rename…) |
+| `PATCH` | `/scim/v2/Users/<id>` | Partial update (deactivate, rename, dept) |
 | `DELETE` | `/scim/v2/Users/<id>` | Delete a user |
+| `GET` | `/scim/v2/Groups` | List all groups |
+| `POST` | `/scim/v2/Groups` | Create a group (AD group) |
+| `GET` | `/scim/v2/Groups/<id>` | Get one group |
+| `PATCH` | `/scim/v2/Groups/<id>` | Add/remove members (filter-path syntax supported) |
+| `DELETE` | `/scim/v2/Groups/<id>` | Delete a group |
+
+---
+
+## The Lifecycle Flow
+
+```
+HR System → Identity Provider (AD/Okta) → SCIM → Databricks
+                                             │
+              ┌──────────────────────────────┼─────────────────────┐
+              │                              │                     │
+         [Onboard]                     [Transfer]           [Terminate]
+         POST /Users                   PATCH /Groups        DELETE /Users
+         POST /Groups                  (add + remove)       PATCH active=f
+         add member                                         + PATCH /Groups
+              │
+    ──────────────────────────────────────────────────────────────────
+         [Recertification — Every 90 Days]
+         Manager reviews who still needs access → revoke stale accounts
+    ──────────────────────────────────────────────────────────────────
+         [Nightly Verification — Every Night at 2 AM]
+         Compare AD (expected) vs Databricks (actual) → fix drift
+```
+
+---
+
+## Run the Full Demo
+
+```bash
+python examples/demo_lifecycle.py
+```
 
 ---
 
@@ -104,20 +130,6 @@ scim-api-explorer/
 - `requests>=2.31.0`
 - `rich>=13.7.0`
 - `python-dotenv>=1.0.0`
-
----
-
-## Examples
-
-**Run the standalone CRUD demo:**
-```bash
-python examples/demo_crud.py
-```
-
-**Inspect ServiceProviderConfig:**
-```bash
-python examples/demo_service_provider.py
-```
 
 ---
 
