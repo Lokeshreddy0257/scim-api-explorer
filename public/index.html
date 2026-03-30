@@ -31,6 +31,8 @@
 <!-- ── Hero ─────────────────────────────────────────────────────────────── -->
 <section class="hero">
   <div class="hero-glow"></div>
+  <div class="hero-orb hero-orb-1"></div>
+  <div class="hero-orb hero-orb-2"></div>
   <div class="container">
     <div class="hero-badge">SCIM 2.0 · RFC 7643 · RFC 7644</div>
     <h1>Enterprise Identity<br/><span class="gradient-text">Lifecycle Simulator</span></h1>
@@ -66,7 +68,7 @@
 <!-- ── Lifecycle Scenarios ───────────────────────────────────────────────── -->
 <section id="lifecycle" class="section">
   <div class="container">
-    <div class="section-header">
+    <div class="section-header reveal">
       <div class="section-tag">Enterprise Workflows</div>
       <h2>Identity Lifecycle Scenarios</h2>
       <p>Every scenario makes real SCIM API calls. Watch the HTTP traffic in the playground below.</p>
@@ -74,7 +76,7 @@
 
     <div class="scenarios-grid">
 
-      <div class="scenario-card" data-scenario="onboarding">
+      <div class="scenario-card reveal" data-scenario="onboarding" style="--reveal-delay:0">
         <div class="scenario-icon" style="background: rgba(34,197,94,0.12); color: #22c55e;">🚀</div>
         <div class="scenario-num">01</div>
         <h3>Onboarding</h3>
@@ -87,7 +89,7 @@
         <button class="run-btn" onclick="runScenario('onboarding')">Run Demo →</button>
       </div>
 
-      <div class="scenario-card" data-scenario="offboarding">
+      <div class="scenario-card reveal" data-scenario="offboarding" style="--reveal-delay:80">
         <div class="scenario-icon" style="background: rgba(234,179,8,0.12); color: #eab308;">🔄</div>
         <div class="scenario-num">02</div>
         <h3>Offboarding</h3>
@@ -100,7 +102,7 @@
         <button class="run-btn" onclick="runScenario('offboarding')">Run Demo →</button>
       </div>
 
-      <div class="scenario-card" data-scenario="termination">
+      <div class="scenario-card reveal" data-scenario="termination" style="--reveal-delay:160">
         <div class="scenario-icon" style="background: rgba(239,68,68,0.12); color: #ef4444;">🚪</div>
         <div class="scenario-num">03</div>
         <h3>Termination</h3>
@@ -113,7 +115,7 @@
         <button class="run-btn" onclick="runScenario('termination')">Run Demo →</button>
       </div>
 
-      <div class="scenario-card" data-scenario="recertification">
+      <div class="scenario-card reveal" data-scenario="recertification" style="--reveal-delay:240">
         <div class="scenario-icon" style="background: rgba(139,92,246,0.12); color: #8b5cf6;">📋</div>
         <div class="scenario-num">04</div>
         <h3>Recertification</h3>
@@ -126,7 +128,7 @@
         <button class="run-btn" onclick="runScenario('recertification')">Run Demo →</button>
       </div>
 
-      <div class="scenario-card scenario-card-wide" data-scenario="verification">
+      <div class="scenario-card scenario-card-wide reveal" data-scenario="verification" style="--reveal-delay:320">
         <div class="scenario-icon" style="background: rgba(59,130,246,0.12); color: #3b82f6;">🌙</div>
         <div class="scenario-num">05</div>
         <h3>Nightly Verification</h3>
@@ -147,14 +149,14 @@
 <!-- ── Endpoints Reference ───────────────────────────────────────────────── -->
 <section id="endpoints" class="section section-dark">
   <div class="container">
-    <div class="section-header">
+    <div class="section-header reveal">
       <div class="section-tag">API Reference</div>
       <h2>SCIM 2.0 Endpoints</h2>
       <p>All endpoints are live. Use the playground below to try them.</p>
     </div>
 
     <div class="endpoints-grid">
-      <div class="endpoint-group">
+      <div class="endpoint-group reveal" style="--reveal-delay:0">
         <div class="endpoint-group-title">Users</div>
         <div class="endpoint-row"><span class="method get">GET</span><code>/scim/v2/Users</code><span class="ep-desc">List all users</span></div>
         <div class="endpoint-row"><span class="method post">POST</span><code>/scim/v2/Users</code><span class="ep-desc">Create a user</span></div>
@@ -163,7 +165,7 @@
         <div class="endpoint-row"><span class="method put">PUT</span><code>/scim/v2/Users/&lt;id&gt;</code><span class="ep-desc">Full replace</span></div>
         <div class="endpoint-row"><span class="method delete">DELETE</span><code>/scim/v2/Users/&lt;id&gt;</code><span class="ep-desc">Delete user</span></div>
       </div>
-      <div class="endpoint-group">
+      <div class="endpoint-group reveal" style="--reveal-delay:100">
         <div class="endpoint-group-title">Groups</div>
         <div class="endpoint-row"><span class="method get">GET</span><code>/scim/v2/Groups</code><span class="ep-desc">List all groups</span></div>
         <div class="endpoint-row"><span class="method post">POST</span><code>/scim/v2/Groups</code><span class="ep-desc">Create a group</span></div>
@@ -171,7 +173,7 @@
         <div class="endpoint-row"><span class="method patch">PATCH</span><code>/scim/v2/Groups/&lt;id&gt;</code><span class="ep-desc">Add / remove members</span></div>
         <div class="endpoint-row"><span class="method delete">DELETE</span><code>/scim/v2/Groups/&lt;id&gt;</code><span class="ep-desc">Delete group</span></div>
       </div>
-      <div class="endpoint-group">
+      <div class="endpoint-group reveal" style="--reveal-delay:200">
         <div class="endpoint-group-title">Discovery</div>
         <div class="endpoint-row"><span class="method get">GET</span><code>/scim/v2/ServiceProviderConfig</code><span class="ep-desc">Server capabilities</span></div>
       </div>
@@ -187,7 +189,7 @@
 <!-- ── Playground ────────────────────────────────────────────────────────── -->
 <section id="playground" class="section">
   <div class="container">
-    <div class="section-header">
+    <div class="section-header reveal">
       <div class="section-tag">Live API Playground</div>
       <h2>Try it Now</h2>
       <p>Make real HTTP requests to the deployed SCIM API. See the exact response.</p>
@@ -269,11 +271,11 @@
 <!-- ── How it works ──────────────────────────────────────────────────────── -->
 <section class="section section-dark">
   <div class="container">
-    <div class="section-header">
+    <div class="section-header reveal">
       <div class="section-tag">Under the Hood</div>
       <h2>How SCIM Integrates with Databricks</h2>
     </div>
-    <div class="diagram-box">
+    <div class="diagram-box reveal" style="--reveal-delay:120">
       <pre class="diagram">
   HR System ──► Identity Provider (Okta / Azure AD)
                           │

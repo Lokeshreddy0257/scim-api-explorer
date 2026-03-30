@@ -546,3 +546,344 @@ footer {
   .nav-links { gap: 14px; font-size: 13px; }
   .scenario-card-wide { grid-column: auto; }
 }
+
+/* ════════════════════════════════════════════════════════════════════════════
+   MOTION & ANIMATIONS
+   ════════════════════════════════════════════════════════════════════════════ */
+
+/* ── Keyframes ───────────────────────────────────────────────────────────── */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.92); }
+  to   { opacity: 1; transform: scale(1); }
+}
+@keyframes gradientShift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+@keyframes glowPulse {
+  0%, 100% { opacity: 0.55; transform: translateX(-50%) scale(1); }
+  50%       { opacity: 0.85; transform: translateX(-50%) scale(1.15); }
+}
+@keyframes orbFloat {
+  0%   { transform: translate(0, 0) scale(1); }
+  33%  { transform: translate(40px, -30px) scale(1.05); }
+  66%  { transform: translate(-20px, 20px) scale(0.97); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+@keyframes orbFloat2 {
+  0%   { transform: translate(0, 0) scale(1); }
+  40%  { transform: translate(-50px, 30px) scale(1.08); }
+  80%  { transform: translate(30px, -20px) scale(0.95); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
+}
+@keyframes borderGlow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(34,211,238,0); }
+  50%       { box-shadow: 0 0 20px 2px rgba(34,211,238,0.12); }
+}
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-20px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes countPop {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.18); }
+  100% { transform: scale(1); }
+}
+@keyframes navSlide {
+  from { opacity: 0; transform: translateY(-100%); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes badgePing {
+  0%   { box-shadow: 0 0 0 0 rgba(34,211,238,0.4); }
+  70%  { box-shadow: 0 0 0 8px rgba(34,211,238,0); }
+  100% { box-shadow: 0 0 0 0 rgba(34,211,238,0); }
+}
+@keyframes logSlide {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes responseReveal {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Nav entrance ────────────────────────────────────────────────────────── */
+nav { animation: fadeInDown 0.5s ease both; }
+
+/* Nav scrolled state (class added by JS) */
+nav.nav-scrolled {
+  background: rgba(10,10,15,0.96);
+  box-shadow: 0 1px 24px rgba(0,0,0,0.4);
+}
+
+/* ── Animated hero glow ──────────────────────────────────────────────────── */
+.hero-glow {
+  animation: glowPulse 6s ease-in-out infinite;
+}
+
+/* Second orb */
+.hero-orb {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(60px);
+}
+.hero-orb-1 {
+  width: 340px; height: 340px;
+  top: 20%; right: 10%;
+  background: radial-gradient(circle, rgba(139,92,246,0.14) 0%, transparent 70%);
+  animation: orbFloat 14s ease-in-out infinite;
+}
+.hero-orb-2 {
+  width: 260px; height: 260px;
+  bottom: 10%; left: 8%;
+  background: radial-gradient(circle, rgba(34,211,238,0.10) 0%, transparent 70%);
+  animation: orbFloat2 18s ease-in-out infinite;
+}
+
+/* ── Hero staggered entrance ─────────────────────────────────────────────── */
+.hero-badge   { animation: fadeInUp 0.6s 0.1s ease both; }
+.hero h1      { animation: fadeInUp 0.7s 0.22s ease both; }
+.hero-sub     { animation: fadeInUp 0.7s 0.36s ease both; }
+.hero-actions { animation: fadeInUp 0.7s 0.48s ease both; }
+.hero-url     { animation: fadeInUp 0.7s 0.58s ease both; }
+
+/* ── Animated gradient text ──────────────────────────────────────────────── */
+.gradient-text {
+  background: linear-gradient(135deg, #22d3ee, #8b5cf6, #22d3ee);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradientShift 5s linear infinite;
+}
+
+/* ── Hero badge pulse ────────────────────────────────────────────────────── */
+.hero-badge { animation: fadeInUp 0.6s 0.1s ease both, badgePing 3s 1.5s ease-out infinite; }
+
+/* ── Scroll reveal ───────────────────────────────────────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Stagger via CSS custom property set by JS */
+.reveal { transition-delay: calc(var(--reveal-delay, 0) * 1ms); }
+
+/* ── Scenario cards ──────────────────────────────────────────────────────── */
+.scenario-card {
+  transition: border-color 0.25s, transform 0.25s cubic-bezier(0.34,1.56,0.64,1),
+              box-shadow 0.25s;
+  will-change: transform;
+}
+.scenario-card:hover {
+  border-color: rgba(34,211,238,0.3);
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 0 8px 32px rgba(34,211,238,0.08),
+              0 2px 8px rgba(0,0,0,0.3);
+}
+
+/* Per-card accent colors on hover */
+.scenario-card[data-scenario="onboarding"]:hover     { border-color: rgba(34,197,94,0.35);  box-shadow: 0 8px 32px rgba(34,197,94,0.08);  }
+.scenario-card[data-scenario="offboarding"]:hover    { border-color: rgba(234,179,8,0.35);  box-shadow: 0 8px 32px rgba(234,179,8,0.08);  }
+.scenario-card[data-scenario="termination"]:hover    { border-color: rgba(239,68,68,0.35);  box-shadow: 0 8px 32px rgba(239,68,68,0.08);  }
+.scenario-card[data-scenario="recertification"]:hover{ border-color: rgba(139,92,246,0.35); box-shadow: 0 8px 32px rgba(139,92,246,0.08); }
+.scenario-card[data-scenario="verification"]:hover   { border-color: rgba(59,130,246,0.35); box-shadow: 0 8px 32px rgba(59,130,246,0.08); }
+
+/* ── Run button shimmer ──────────────────────────────────────────────────── */
+.run-btn {
+  position: relative;
+  overflow: hidden;
+  transition: background 0.2s, border-color 0.2s, transform 0.15s;
+}
+.run-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.15) 50%, transparent 100%);
+  background-size: 200% 100%;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.run-btn:hover::after {
+  opacity: 1;
+  animation: shimmer 0.8s ease-in-out;
+}
+.run-btn:hover { transform: translateY(-1px); }
+.run-btn:active { transform: translateY(0) scale(0.97); }
+
+/* ── Send button ─────────────────────────────────────────────────────────── */
+.send-btn {
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.15s, opacity 0.2s;
+}
+.send-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  background-size: 200% 100%;
+  opacity: 0;
+}
+.send-btn:not(:disabled):hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(34,211,238,0.25);
+}
+.send-btn:not(:disabled):hover::after {
+  opacity: 1;
+  animation: shimmer 0.9s ease;
+}
+.send-btn:active:not(:disabled) { transform: scale(0.98); }
+
+/* ── Primary button ──────────────────────────────────────────────────────── */
+.btn-primary {
+  position: relative;
+  overflow: hidden;
+  transition: opacity 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+.btn-primary:hover {
+  opacity: 1;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(34,211,238,0.3);
+}
+.btn-primary::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent);
+  background-size: 200% 100%;
+  animation: shimmer 2.5s ease-in-out infinite;
+}
+
+/* ── Endpoint rows ───────────────────────────────────────────────────────── */
+.endpoint-row {
+  transition: background 0.15s, padding-left 0.15s;
+  border-radius: 6px;
+  margin: 0 -8px;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+.endpoint-row:hover {
+  background: rgba(255,255,255,0.04);
+  padding-left: 12px;
+}
+
+/* ── Endpoint group hover ────────────────────────────────────────────────── */
+.endpoint-group {
+  transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
+}
+.endpoint-group:hover {
+  border-color: var(--border2);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  transform: translateY(-2px);
+}
+
+/* ── Playground panel ────────────────────────────────────────────────────── */
+.pg-panel { transition: border-color 0.25s; }
+.pg-panel:focus-within { border-color: rgba(34,211,238,0.25); }
+
+/* ── qbtn hover ──────────────────────────────────────────────────────────── */
+.qbtn { transition: all 0.18s; }
+.qbtn:hover { transform: translateY(-1px); box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+.qbtn:active { transform: scale(0.96); }
+
+/* ── Stats bar ───────────────────────────────────────────────────────────── */
+.stat-num {
+  transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  display: inline-block;
+}
+.stat.pop .stat-num { animation: countPop 0.4s ease; }
+
+/* ── Log entries slide in ────────────────────────────────────────────────── */
+.log-entry {
+  animation: logSlide 0.25s ease both;
+}
+
+/* ── Scenario output ─────────────────────────────────────────────────────── */
+.scenario-output:not(.hidden) {
+  animation: scaleIn 0.3s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+
+/* ── Response panel reveal ───────────────────────────────────────────────── */
+.pg-response.has-content {
+  animation: responseReveal 0.3s ease both;
+}
+
+/* ── Nav link underline slide ────────────────────────────────────────────── */
+.nav-links a:not(.nav-github) {
+  position: relative;
+  transition: color 0.2s;
+}
+.nav-links a:not(.nav-github)::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: var(--cyan);
+  transition: width 0.25s ease;
+}
+.nav-links a:not(.nav-github):hover::after { width: 100%; }
+
+/* ── Brand icon spin on hover ────────────────────────────────────────────── */
+.nav-brand:hover .brand-icon {
+  display: inline-block;
+  animation: spin 0.5s ease;
+}
+
+/* ── Auth note ───────────────────────────────────────────────────────────── */
+.auth-note {
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.auth-note:hover {
+  border-color: rgba(234,179,8,0.35);
+  box-shadow: 0 4px 16px rgba(234,179,8,0.06);
+}
+
+/* ── Diagram box ─────────────────────────────────────────────────────────── */
+.diagram-box {
+  transition: border-color 0.25s, box-shadow 0.25s;
+}
+.diagram-box:hover {
+  border-color: var(--border2);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.25);
+}
+
+/* ── Hero URL bar ────────────────────────────────────────────────────────── */
+.hero-url {
+  transition: border-color 0.25s, box-shadow 0.25s;
+  cursor: pointer;
+}
+.hero-url:hover {
+  border-color: rgba(34,211,238,0.3);
+  box-shadow: 0 0 16px rgba(34,211,238,0.1);
+}
+
+/* ── Reduce motion ───────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

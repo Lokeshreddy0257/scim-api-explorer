@@ -509,3 +509,129 @@ async function executeStep(step, logEl) {
 }
 
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+/* ════════════════════════════════════════════════════════════════════════════
+   MOTION — scroll reveal, counters, nav, cursor glow
+   ════════════════════════════════════════════════════════════════════════════ */
+
+document.addEventListener('DOMContentLoaded', () => {
+  initScrollReveal();
+  initStatCounters();
+  initNavScroll();
+  initCursorGlow();
+  initHeroUrlCopy();
+  initPlaygroundReveal();
+});
+
+/* ── Scroll reveal (IntersectionObserver) ───────────────────────────────── */
+function initScrollReveal() {
+  const els = document.querySelectorAll('.reveal');
+  const io  = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+  els.forEach(el => io.observe(el));
+}
+
+/* ── Stat counter animation ─────────────────────────────────────────────── */
+function initStatCounters() {
+  const statNums = document.querySelectorAll('.stat-num');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      const el  = e.target;
+      const raw = el.textContent.trim();
+      const num = parseInt(raw, 10);
+      if (isNaN(num)) { io.unobserve(el); return; }
+
+      // Count up animation
+      const duration = 900;
+      const start    = performance.now();
+      const tick = (now) => {
+        const progress = Math.min((now - start) / duration, 1);
+        const eased    = 1 - Math.pow(1 - progress, 3);
+        el.textContent = Math.round(eased * num);
+        if (progress < 1) requestAnimationFrame(tick);
+        else {
+          el.textContent = num;
+          el.closest('.stat').classList.add('pop');
+          setTimeout(() => el.closest('.stat').classList.remove('pop'), 400);
+        }
+      };
+      requestAnimationFrame(tick);
+      io.unobserve(el);
+    });
+  }, { threshold: 0.5 });
+  statNums.forEach(el => io.observe(el));
+}
+
+/* ── Nav scroll state ───────────────────────────────────────────────────── */
+function initNavScroll() {
+  const nav = document.querySelector('nav');
+  const onScroll = () => {
+    nav.classList.toggle('nav-scrolled', window.scrollY > 20);
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+}
+
+/* ── Cursor glow (desktop only) ─────────────────────────────────────────── */
+function initCursorGlow() {
+  if (window.matchMedia('(pointer: coarse)').matches) return; // skip on touch
+  const glow = document.createElement('div');
+  glow.style.cssText = `
+    position: fixed; pointer-events: none; z-index: 9999;
+    width: 300px; height: 300px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(34,211,238,0.06) 0%, transparent 70%);
+    transform: translate(-50%, -50%);
+    transition: opacity 0.3s;
+    top: 0; left: 0;
+  `;
+  document.body.appendChild(glow);
+  let mouseX = 0, mouseY = 0, glowX = 0, glowY = 0;
+  document.addEventListener('mousemove', e => { mouseX = e.clientX; mouseY = e.clientY; });
+  document.addEventListener('mouseleave', () => { glow.style.opacity = '0'; });
+  document.addEventListener('mouseenter', () => { glow.style.opacity = '1'; });
+  const animateGlow = () => {
+    glowX += (mouseX - glowX) * 0.08;
+    glowY += (mouseY - glowY) * 0.08;
+    glow.style.left = glowX + 'px';
+    glow.style.top  = glowY + 'px';
+    requestAnimationFrame(animateGlow);
+  };
+  animateGlow();
+}
+
+/* ── Hero URL — click to copy ───────────────────────────────────────────── */
+function initHeroUrlCopy() {
+  const urlBar = document.querySelector('.hero-url');
+  const urlCode = document.querySelector('.url-code');
+  if (!urlBar || !urlCode) return;
+  urlBar.addEventListener('click', () => {
+    navigator.clipboard.writeText(urlCode.textContent).then(() => {
+      const orig = urlCode.textContent;
+      urlCode.textContent = 'Copied!';
+      urlCode.style.color = '#4ade80';
+      setTimeout(() => {
+        urlCode.textContent = orig;
+        urlCode.style.color = '';
+      }, 1400);
+    });
+  });
+}
+
+/* ── Playground reveal animation on response ────────────────────────────── */
+function initPlaygroundReveal() {
+  const responseEl = document.getElementById('pg-response');
+  if (!responseEl) return;
+  const observer = new MutationObserver(() => {
+    responseEl.classList.remove('has-content');
+    void responseEl.offsetWidth; // reflow
+    responseEl.classList.add('has-content');
+  });
+  observer.observe(responseEl, { childList: true, subtree: true });
+}
